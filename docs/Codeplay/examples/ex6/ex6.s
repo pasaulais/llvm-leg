@@ -12,9 +12,8 @@ ex6:                                    # @ex6
 .LBB0_2:                                # %if.else
 	sub r0, r0, r1
 	bx lr
-.Ltmp0:
-	.size	ex6, .Ltmp0-ex6
+.Lfunc_end0:
+	.size	ex6, .Lfunc_end0-ex6
 
 
-	.ident	"clang version 3.6.0 "
 	.section	".note.GNU-stack","",@progbits

@@ -1,5 +1,5 @@
-	.file	"docs/Codeplay/examples/ex8/ex8.ll"
 	.text
+	.file	"../../docs/Codeplay/examples/ex8/ex8.ll"
 	.globl	foo
 	.type	foo,@function
 foo:                                    # @foo
@@ -7,8 +7,8 @@ foo:                                    # @foo
 	movw r1, #3
 	mul r0, r0, r1
 	bx lr
-.tmp0:
-	.size	foo, .tmp0-foo
+.Lfunc_end0:
+	.size	foo, .Lfunc_end0-foo
 
 	.globl	bar
 	.type	bar,@function
@@ -19,8 +19,8 @@ bar:                                    # @bar
 	movt r1, foo
 	bl r1
 	bx lr
-.tmp1:
-	.size	bar, .tmp1-bar
+.Lfunc_end1:
+	.size	bar, .Lfunc_end1-bar
 
 
-	.ident	"clang version 3.4.2 "
+	.section	".note.GNU-stack","",@progbits

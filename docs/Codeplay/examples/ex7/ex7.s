@@ -1,5 +1,5 @@
 	.text
-	.file	"ex7.ll"
+	.file	"../../docs/Codeplay/examples/ex7/ex7.ll"
 	.globl	ex7
 	.type	ex7,@function
 ex7:                                    # @ex7
@@ -8,9 +8,8 @@ ex7:                                    # @ex7
 	add r0, r0, #42
 	str r0, [r1]
 	bx lr
-.Ltmp0:
-	.size	ex7, .Ltmp0-ex7
+.Lfunc_end0:
+	.size	ex7, .Lfunc_end0-ex7
 
 
-	.ident	"clang version 3.6.0 "
 	.section	".note.GNU-stack","",@progbits

@@ -6,13 +6,9 @@ target triple = "leg"
 define i32 @foo(i32 %a) #0 {
     %p = alloca i32, align 4
     store i32 2, i32* %p
-    %b = load i32* %p, align 4
+    %b = load i32, i32* %p, align 4
     %c = add i32 %a, %b
     ret i32 %c
 }
 
 attributes #0 = { nounwind readonly "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
-
-!llvm.ident = !{!0}
-
-!0 = metadata !{metadata !"clang version 3.5.0 "}
