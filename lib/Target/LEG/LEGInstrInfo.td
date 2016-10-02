@@ -36,7 +36,7 @@ multiclass BinOp<bits<4> opcode, string opstr, SDNode opnode> {
   def ri : ALUInst<opcode, (outs GRRegs:$dst),
                    (ins GRRegs:$src1, i32imm:$imm),
                    !strconcat(opstr, " $dst, $src1, $imm"),
-                   [(set i32:$dst, (opnode i32:$src1, LEGimm8:$imm))]> {
+                   [/*(set i32:$dst, (opnode i32:$src1, LEGimm8:$imm))*/]> {
     bits<4> dst;
     bits<4> src1;
     bits<12> imm;
@@ -67,7 +67,7 @@ multiclass ShiftOp<bits<4> opcoder, bits<3> opcodei, string opstr, SDNode opnode
   def ri : ALUInst<0b1101, (outs GRRegs:$dst),
                    (ins GRRegs:$src1, i32imm:$imm),
                    !strconcat(opstr, " $dst, $src1, $imm"),
-                   [(set i32:$dst, (opnode i32:$src1, LEGimm8:$imm))]> {
+                   [/*(set i32:$dst, (opnode i32:$src1, LEGimm8:$imm))*/]> {
     bits<4> dst;
     bits<4> src1;
     bits<5> imm;
@@ -188,36 +188,36 @@ def CMP : InstLEG<(outs), (ins GRRegs:$lhs, GRRegs:$rhs),
 // Load/Store Instructions
 //===----------------------------------------------------------------------===//
 
-def LDR  : InstLEG<(outs GRRegs:$val), (ins memsrc:$addr),
+def LDR  : InstLEG<(outs GRRegs:$val), (ins GRRegs:$addr),
                    "ldr $val, $addr",
-                   [(set i32:$val, (load addr:$addr))]> {
+                   [(set i32:$val, (load i32:$addr))]> {
   bits<4> val;
   bits<16> addr;
   let Inst{27-25} = 0b010;
   let Inst{24} = 1; // not indexed
-  let Inst{23} = 1; // add ofset
+  let Inst{23} = 0; // no ofset
   let Inst{22} = 0;
   let Inst{21} = 0; // no writeback
   let Inst{20} = 1; // load
-  let Inst{19-16} = addr{15-12};
+  let Inst{19-16} = 0;
   let Inst{15-12} = val;
-  let Inst{11-0} = addr{11-0};
+  let Inst{11-0} = 0;
 }
 
-def STR : InstLEG<(outs), (ins GRRegs:$val, memsrc:$addr),
+def STR : InstLEG<(outs), (ins GRRegs:$val, GRRegs:$addr),
                   "str $val, $addr",
-                  [(store i32:$val, addr:$addr)]> {
+                  [(store i32:$val, i32:$addr)]> {
   bits<16> addr;
   bits<4> val;
   let Inst{27-25} = 0b010;
   let Inst{24} = 1; // not indexed
-  let Inst{23} = 1; // add ofset
+  let Inst{23} = 0; // no ofset
   let Inst{22} = 0;
   let Inst{21} = 0; // no writeback
   let Inst{20} = 0; // store
-  let Inst{19-16} = addr{15-12};
+  let Inst{19-16} = 0;
   let Inst{15-12} = val;
-  let Inst{11-0} = addr{11-0};
+  let Inst{11-0} = 0;
 }
 
 //===----------------------------------------------------------------------===//

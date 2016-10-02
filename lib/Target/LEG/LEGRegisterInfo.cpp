@@ -80,28 +80,22 @@ void LEGRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
                                           int SPAdj, unsigned FIOperandNum,
                                           RegScavenger *RS) const {
   MachineInstr &MI = *II;
-  const MachineFunction &MF = *MI.getParent()->getParent();
+  MachineBasicBlock &MBB = *MI.getParent();
+  MachineFunction &MF = *MBB.getParent();
   const MachineFrameInfo *MFI = MF.getFrameInfo();
+  const TargetInstrInfo *TII = MF.getSubtarget().getInstrInfo();
   MachineOperand &FIOp = MI.getOperand(FIOperandNum);
+
+  // Materialize the offset in the index register.
   unsigned FI = FIOp.getIndex();
+  int Offset = MFI->getObjectOffset(FI) + MFI->getStackSize();
+  FIOp.ChangeToImmediate(Offset);
 
-  // Determine if we can eliminate the index from this kind of instruction.
-  unsigned ImmOpIdx = 0;
-  switch (MI.getOpcode()) {
-  default:
-    // Not supported yet.
-    return;
-  case LEG::LDR:
-  case LEG::STR:
-    ImmOpIdx = FIOperandNum + 1;
-    break;
-  }
-
-  // FIXME: check the size of offset.
-  MachineOperand &ImmOp = MI.getOperand(ImmOpIdx);
-  int Offset = MFI->getObjectOffset(FI) + MFI->getStackSize() + ImmOp.getImm();
-  FIOp.ChangeToRegister(LEG::SP, false);
-  ImmOp.setImm(Offset);
+  // Compute the index as the stack pointer plus the offset.
+  unsigned IndexReg = MI.getOperand(0).getReg();
+  BuildMI(MBB, std::next(II), MI.getDebugLoc(), TII->get(LEG::ADDrr), IndexReg)
+          .addReg(LEG::SP)
+          .addReg(IndexReg);
 }
 
 unsigned LEGRegisterInfo::getFrameRegister(const MachineFunction &MF) const {
